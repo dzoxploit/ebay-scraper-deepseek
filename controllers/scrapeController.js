@@ -4,33 +4,31 @@ const { summarizeWithDeepseek } = require("../services/deepseekService");
 
 const scrapeEbayProducts = async (req, res) => {
   try {
-    const { query = "nike", pages = 1 } = req.query;
+    const { query = "nike", pages = 1, limit = 10 } = req.query;
 
     // Scrape product listings
-    const products = await scrapeAllPages(query, pages);
+    const products = await scrapeAllPages(query, pages, limit);
 
     // Scrape product descriptions and summarize using Deepseek
     for (const product of products) {
       try {
-        product.description = await scrapeProductDescription(product.link);
+        product.description = await scrapeProductDescription(product.name);
       } catch (error) {
         console.error(
           `Failed to scrape description for ${product.link}:`,
           error
         );
-        product.description = error;
+        product.description = error.message;
       }
 
       try {
-        product.summary = product.description
-          ? await summarizeWithDeepseek(product.description)
-          : null;
+        product.summary = await summarizeWithDeepseek(product.name);
       } catch (error) {
         console.error(
           `Failed to summarize description for ${product.link}:`,
           error
         );
-        product.summary = error;
+        product.summary = error.message;
       }
     }
 
