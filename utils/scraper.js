@@ -30,20 +30,20 @@ const scrapeProductListing = async (url) => {
   }
 };
 
-// Function to generate or enhance product description using Ollama API
 const generateDescriptionWithOllama = async (text) => {
   try {
-    const response = await axios.post(
-      "http://127.0.0.1:11434/api/generate", // Ollama API endpoint
-      {
+    const response = await axios({
+      method: "post",
+      url: "http://127.0.0.1:11434/api/generate", // Ollama API endpoint
+      data: {
         model: "deepseek-coder", // Specify the model
         prompt: `Generate a detailed and engaging product description based on the following information: ${text}`,
         max_tokens: 20, // Adjust as needed
       },
-      { httpsAgent } // Use HTTPS Agent
-    );
+      httpsAgent, // Use HTTPS Agent
+      responseType: "stream", // Handle streaming response
+    });
 
-    // Ollama API streams responses, so we need to concatenate them
     let description = "";
 
     return new Promise((resolve, reject) => {
@@ -52,7 +52,7 @@ const generateDescriptionWithOllama = async (text) => {
           // Each chunk is a JSON string, parse it
           const jsonChunk = JSON.parse(chunk.toString());
           if (jsonChunk.response) {
-            summary += jsonChunk.response;
+            description += jsonChunk.response;
           }
         } catch (error) {
           console.error("Error parsing chunk:", error);
@@ -70,9 +70,10 @@ const generateDescriptionWithOllama = async (text) => {
 
 const scrapeProductDescription = async (description) => {
   try {
-    description = await generateDescriptionWithOllama(description);
-
-    return description;
+    const enhancedDescription = await generateDescriptionWithOllama(
+      description
+    );
+    return enhancedDescription;
   } catch (error) {
     console.error("Error scraping product description:", error);
     throw error;
