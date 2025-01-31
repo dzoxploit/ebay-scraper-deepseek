@@ -18,7 +18,7 @@ const scrapeEbayProducts = async (req, res) => {
           `Failed to scrape description for ${product.link}:`,
           error
         );
-        product.description = null;
+        product.description = error;
       }
 
       try {
@@ -30,7 +30,7 @@ const scrapeEbayProducts = async (req, res) => {
           `Failed to summarize description for ${product.link}:`,
           error
         );
-        product.summary = null;
+        product.summary = error;
       }
     }
 
