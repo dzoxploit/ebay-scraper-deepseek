@@ -45,27 +45,32 @@ const generateDescriptionWithOllama = async (text) => {
 
     // Ollama API streams responses, so we need to concatenate them
     let description = "";
-    for (const chunk of response.data) {
-      description += chunk.response;
-    }
 
-    return description.trim();
+    return new Promise((resolve, reject) => {
+      response.data.on("data", (chunk) => {
+        try {
+          // Each chunk is a JSON string, parse it
+          const jsonChunk = JSON.parse(chunk.toString());
+          if (jsonChunk.response) {
+            summary += jsonChunk.response;
+          }
+        } catch (error) {
+          console.error("Error parsing chunk:", error);
+        }
+      });
+
+      response.data.on("end", () => resolve(description.trim()));
+      response.data.on("error", (error) => reject(error));
+    });
   } catch (error) {
     console.error("Error generating description with Ollama:", error);
     throw error;
   }
 };
 
-const scrapeProductDescription = async (url) => {
+const scrapeProductDescription = async (description) => {
   try {
-    const { data } = await axios.get(url, { httpsAgent });
-    const $ = cheerio.load(data);
-    let description = $("#itemDescription").text().trim() || "-";
-
-    // Enhance or generate description using Ollama
-    if (description !== "-") {
-      description = await generateDescriptionWithOllama(description);
-    }
+    description = await generateDescriptionWithOllama(description);
 
     return description;
   } catch (error) {

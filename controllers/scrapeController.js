@@ -25,7 +25,7 @@ const scrapeEbayProducts = async (req, res) => {
         product.summary = await summarizeWithDeepseek(product.name);
       } catch (error) {
         console.error(
-          `Failed to summarize description for ${product.link}:`,
+          `Failed to summarize description for ${product.name}:`,
           error
         );
         product.summary = error.message;
