@@ -121,29 +121,27 @@ const loginWithGoogleAndScrape = async (url, email, password) => {
   await page.bringToFront();
   await new Promise((resolve) => setTimeout(resolve, 3000));
 
-    await page.waitForNavigation({ waitUntil: "networkidle2" });
+  await page.waitForNavigation({ waitUntil: "networkidle2" });
 
-    // Navigate to the product page
-    const url = "";
-    await page.goto(url, { waitUntil: "networkidle2" });
+  // Navigate to the product page
+  const url = "https://shopee.tw/---i.43269385.23975514969";
+  await page.goto(url, { waitUntil: "networkidle2" });
 
-    // Wait for the product details to load
-    await page.waitForSelector("h1.product-name", { visible: true });
+  // Wait for the product details to load
+  await page.waitForSelector("h1.product-name", { visible: true });
 
-    const productDetails = await page.evaluate(() => {
-      const title = document
-        .querySelector("h1.product-name")
-        ?.textContent.trim();
-      const price = document
-        .querySelector("div.product-price")
-        ?.textContent.trim();
-      const description = document
-        .querySelector("div.product-description")
-        ?.textContent.trim();
-      return { title, price, description };
-    });
+  const productDetails = await page.evaluate(() => {
+    const title = document.querySelector("h1.product-name")?.textContent.trim();
+    const price = document
+      .querySelector("div.product-price")
+      ?.textContent.trim();
+    const description = document
+      .querySelector("div.product-description")
+      ?.textContent.trim();
+    return { title, price, description };
+  });
 
-    console.log(productDetails);
+  console.log(productDetails);
 
   await browser.close();
   return productDetails;

@@ -1,10 +1,11 @@
-# eBay Product Scraper API
+# ecommerce Product Scraper API
 
 This is a simple Node.js API that scrapes product listings from eBay.
 
 ## Features
 
 - Scrapes eBay product listings based on a search query.
+- Scrapes Detail Product Shopee Taiwan
 - Supports pagination.
 - Provides a REST API endpoint to fetch scraped data.
 
