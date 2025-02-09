@@ -1,6 +1,10 @@
 const { scrapeProductDescription } = require("../utils/scraper");
+
 const { scrapeAllPages } = require("../utils/pagination");
-const { summarizeWithDeepseek } = require("../services/deepseekService");
+const {
+  summarizeWithDeepseek,
+  scrapeProductDetails,
+} = require("../services/deepseekService");
 
 const scrapeEbayProducts = async (req, res) => {
   try {
@@ -39,4 +43,21 @@ const scrapeEbayProducts = async (req, res) => {
   }
 };
 
-module.exports = { scrapeEbayProducts };
+const scrapeShopeeProduct = async (req, res) => {
+  const { url, email, password } = req.body;
+
+  if (!url || !email || !password) {
+    return res
+      .status(400)
+      .json({ error: "URL, email, and password are required" });
+  }
+
+  try {
+    const productDetails = await scrapeProductDetails(url, email, password);
+    res.status(200).json(productDetails);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+module.exports = { scrapeEbayProducts, scrapeShopeeProduct };

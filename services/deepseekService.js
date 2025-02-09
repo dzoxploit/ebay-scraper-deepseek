@@ -1,5 +1,6 @@
 const axios = require("axios");
 const https = require("https");
+const { loginWithGoogleAndScrape } = require("../utils/scraper");
 
 const httpsAgent = new https.Agent({
   rejectUnauthorized: false, // Disable certificate validation
@@ -43,4 +44,12 @@ const summarizeWithDeepseek = async (text) => {
   }
 };
 
-module.exports = { summarizeWithDeepseek };
+const scrapeProductDetails = async (url, email, password)  => {
+  try {
+    const productDetails = await loginWithGoogleAndScrape(url, email, password);
+    return productDetails;
+  } catch (error) {
+    throw new Error(`Failed to scrape product details: ${error.message}`);
+  }
+}
+module.exports = { summarizeWithDeepseek, scrapeProductDetails };
