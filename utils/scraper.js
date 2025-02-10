@@ -87,10 +87,10 @@ const scrapeProductDescription = async (description) => {
 const loginWithGoogleAndScrape = async (url, email, password) => {
   const proxy = {
     host: "proxy.toolip.io",
-    port: "31114",
+    port: "311**",
     username:
-      "8c5906b99fbd1c0bcd0f916d545c565a2cf0804c46434fc3b5d8a9f097276a746e4add659a383a27d5396fdf6a2a72a1102ff2b41ba0992acde9aec3ff54e632",
-    password: "s8vgpx3092y2",
+      "8c5906b99fbd1c0bcd0f916d545c565a2cf0804c46434fc3b5d8a9f097276a746e4add659a383a27d5396fdf***",
+    password: "s8vgpx30***",
   };
 
   const browser = await puppeteer.launch({
