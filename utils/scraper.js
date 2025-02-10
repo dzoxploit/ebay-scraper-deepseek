@@ -85,8 +85,29 @@ const scrapeProductDescription = async (description) => {
 };
 
 const loginWithGoogleAndScrape = async (url, email, password) => {
-  const browser = await puppeteer.launch({ headless: false }); // Set headless: true for production
+  const proxy = {
+    host: "proxy.toolip.io",
+    port: "31114",
+    username:
+      "8c5906b99fbd1c0bcd0f916d545c565a2cf0804c46434fc3b5d8a9f097276a746e4add659a383a27d5396fdf6a2a72a1102ff2b41ba0992acde9aec3ff54e632",
+    password: "s8vgpx3092y2",
+  };
+
+  const browser = await puppeteer.launch({
+    headless: false, // Set headless: true for production
+    args: [
+      `--proxy-server=${proxy.host}:${proxy.port}`,
+      `--proxy-auth=${proxy.username}:${proxy.password}`,
+    ],
+  });
+
   const page = await browser.newPage();
+
+  // Authenticate with the proxy (if required)
+  await page.authenticate({
+    username: proxy.username,
+    password: proxy.password,
+  });
 
   // Buka halaman login Shopee
   await page.goto(
@@ -119,13 +140,13 @@ const loginWithGoogleAndScrape = async (url, email, password) => {
 
   // Kembali ke halaman Shopee
   await page.bringToFront();
-  await new Promise((resolve) => setTimeout(resolve, 3000));
+  await new Promise((resolve) => setTimeout(resolve, 7000));
 
   await page.waitForNavigation({ waitUntil: "networkidle2" });
 
   // Navigate to the product page
-  const url = "https://shopee.tw/---i.43269385.23975514969";
-  await page.goto(url, { waitUntil: "networkidle2" });
+  const productUrl = "https://shopee.tw/---i.43269385.23975514969";
+  await page.goto(productUrl, { waitUntil: "networkidle2" });
 
   // Wait for the product details to load
   await page.waitForSelector("h1.product-name", { visible: true });
